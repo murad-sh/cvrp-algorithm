@@ -4,6 +4,7 @@ from file_handler import read_file, log_results
 from random_search import RandomSearch
 from greedy_search import GreedySearch
 from genetic_algorithm import GeneticAlgorithm
+from tabu_search import TabuSearch
 
 data_dir = "data"
 results_dir = "results"
@@ -16,47 +17,58 @@ def run_all():
         if file_name.endswith(".vrp"):
             instance = read_file(os.path.join(data_dir, file_name))
 
-            # Random Search
-            random_search = RandomSearch(**instance)
-            best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = (
-                random_search.run(1000)
-            )
-            log_results(
-                results_dir,
-                file_name,
-                "Random Search",
-                best_fitness,
-                worst_fitness,
-                avg_fitness,
-            )
+            algorithms = [RandomSearch(**instance), GreedySearch(**instance), GeneticAlgorithm(**instance), TabuSearch(**instance)]
+            for algorithm in algorithms:
+                best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = algorithm.run(1000)
+                log_results(results_dir, 
+                            file_name, 
+                            algorithm.__class__.__name__,
+                            best_fitness, 
+                            worst_fitness, 
+                            avg_fitness
+                            )
 
-            # Greedy Search
-            greedy_search = GreedySearch(**instance)
-            best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = (
-                greedy_search.run(1000)
-            )
-            log_results(
-                results_dir,
-                file_name,
-                "Greedy Search",
-                best_fitness,
-                worst_fitness,
-                avg_fitness,
-            )
+            # # Random Search
+            # random_search = RandomSearch(**instance)
+            # best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = (
+            #     random_search.run(1000)
+            # )
+            # log_results(
+            #     results_dir,
+            #     file_name,
+            #     "Random Search",
+            #     best_fitness,
+            #     worst_fitness,
+            #     avg_fitness,
+            # )
 
-            # Genetic Algorithm
-            ga = GeneticAlgorithm(**instance)
-            best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = ga.run(
-                generations=1000
-            )
-            log_results(
-                results_dir,
-                file_name,
-                "Genetic Algorithm",
-                best_fitness,
-                worst_fitness,
-                avg_fitness,
-            )
+            # # Greedy Search
+            # greedy_search = GreedySearch(**instance)
+            # best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = (
+            #     greedy_search.run(1000)
+            # )
+            # log_results(
+            #     results_dir,
+            #     file_name,
+            #     "Greedy Search",
+            #     best_fitness,
+            #     worst_fitness,
+            #     avg_fitness,
+            # )
+
+            # # Genetic Algorithm
+            # ga = GeneticAlgorithm(**instance)
+            # best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = ga.run(
+            #     generations=1000
+            # )
+            # log_results(
+            #     results_dir,
+            #     file_name,
+            #     "Genetic Algorithm",
+            #     best_fitness,
+            #     worst_fitness,
+            #     avg_fitness,
+            # )
 
 
 # Run experiments on population size, crossover rate, and mutation rate for GA -> results/population_experiment.csv, results/crossover_experiment.csv, results/mutation_experiment.csv
