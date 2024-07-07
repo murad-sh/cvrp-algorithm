@@ -17,6 +17,10 @@ There are 2 implemented versions:
 - Standard: Constructs a solution incrementally by always selecting the nearest customer that doesn't violate the capacity constraint.
 - Randomized Greedy Search: Adds randomness by sometimes selecting one of the k-nearest customers instead of the nearest, to explore different potential solutions.
 
+### Tabu Search
+
+An iterative optimization method for the CVRP that explores neighboring solutions by making local changes, such as swapping customers between routes. It uses a tabu list to avoid revisiting recently explored solutions, enhancing the search for a global optimum. The best solution found during the process is selected.
+
 ### Genetic Algorithm
 
 An evolutionary algorithm inspired by natural selection.
