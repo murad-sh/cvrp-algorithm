@@ -1,11 +1,11 @@
-import random
 from utils import calculate_distance_matrix, calculate_fitness
-from file_handler import read_file
 from random_search import RandomSearch
 
 
 class TabuSearch:
-    def __init__(self, dimension, capacity, node_coords, demands, depot, tabu_tenure=10):
+    def __init__(
+        self, dimension, capacity, node_coords, demands, depot, tabu_tenure=10
+    ):
         self.dimension = dimension
         self.capacity = capacity
         self.node_coords = node_coords
@@ -15,7 +15,7 @@ class TabuSearch:
         self.tabu_list = []
         self.tabu_tenure = tabu_tenure
         self.best_solution = None
-        self.best_cost = float('inf')
+        self.best_cost = float("inf")
 
     def generate_initial_solution(self):
         initial_solution = RandomSearch(
@@ -54,10 +54,10 @@ class TabuSearch:
         worst_fitness = float("-inf")
         total_fitness_sum = 0
 
-        for iteration in range(iterations):
+        for _ in range(iterations):
             neighbors = self.get_neighbors(current_solution)
             best_neighbor = None
-            best_neighbor_cost = float('inf')
+            best_neighbor_cost = float("inf")
 
             for neighbor in neighbors:
                 neighbor_cost = calculate_fitness(neighbor, self.distance_matrix)[0]
