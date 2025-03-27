@@ -1,5 +1,6 @@
 from utils import calculate_distance_matrix, calculate_fitness
 from random_search import RandomSearch
+import statistics
 
 
 class TabuSearch:
@@ -46,13 +47,14 @@ class TabuSearch:
 
     def run(self, iterations=1000):
         current_solution = self.generate_initial_solution()
-        current_cost = calculate_fitness(current_solution, self.distance_matrix)[0]
+        current_cost = calculate_fitness(current_solution, self.distance_matrix)
         self.best_solution = current_solution
         self.best_cost = current_cost
 
         best_fitness = float("inf")
         worst_fitness = float("-inf")
         total_fitness_sum = 0
+        fitness_values = []
 
         for _ in range(iterations):
             neighbors = self.get_neighbors(current_solution)
@@ -60,7 +62,7 @@ class TabuSearch:
             best_neighbor_cost = float("inf")
 
             for neighbor in neighbors:
-                neighbor_cost = calculate_fitness(neighbor, self.distance_matrix)[0]
+                neighbor_cost = calculate_fitness(neighbor, self.distance_matrix)
                 move = (current_solution, neighbor)
                 if not self.is_tabu(move) and neighbor_cost < best_neighbor_cost:
                     best_neighbor = neighbor
@@ -75,6 +77,7 @@ class TabuSearch:
             self.add_to_tabu_list((current_solution, best_neighbor))
 
             total_fitness_sum += current_cost
+            fitness_values.append(current_cost)
 
             if current_cost < best_fitness:
                 best_fitness = current_cost
@@ -84,15 +87,15 @@ class TabuSearch:
         average_fitness = total_fitness_sum / iterations
 
         best_individual = self.best_solution
-        best_fitness, best_total_distance, best_number_of_vehicles = calculate_fitness(
+        best_fitness = calculate_fitness(
             best_individual, self.distance_matrix
         )
+        standard_deviation = statistics.stdev(fitness_values)
 
         return (
             best_individual,
             best_fitness,
             worst_fitness,
             average_fitness,
-            best_total_distance,
-            best_number_of_vehicles,
+            standard_deviation
         )

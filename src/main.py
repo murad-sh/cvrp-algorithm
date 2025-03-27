@@ -24,7 +24,14 @@ def run_all():
                 TabuSearch(**instance),
             ]
             for algorithm in algorithms:
-                _, best_fitness, worst_fitness, avg_fitness, _, _ = algorithm.run(1000)
+                if algorithm.__class__.__name__ == "RandomSearch":
+                    number_of_runs = 10000
+                elif algorithm.__class__.__name__ == "GreedySearch":
+                    number_of_runs = 1
+                else:
+                    number_of_runs = 10
+
+                _, best_fitness, worst_fitness, avg_fitness, std = algorithm.run(number_of_runs)
                 log_results(
                     results_dir,
                     file_name,
@@ -32,61 +39,12 @@ def run_all():
                     best_fitness,
                     worst_fitness,
                     avg_fitness,
+                    std
                 )
-
-
-# Run experiments on population size, crossover rate, and mutation rate for GA -> results/population_experiment.csv, results/crossover_experiment.csv, results/mutation_experiment.csv
-def run_experiment(instance, filename, variable, values):
-    with open(os.path.join(results_dir, filename), "w", newline="") as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerow(["Parameter Value", "Best", "Worst", "Avg"])
-
-        for value in values:
-            algorithm = GeneticAlgorithm(**instance)
-
-            if variable == "population_size":
-                best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = (
-                    algorithm.run(population_size=value)
-                )
-            elif variable == "crossover_rate":
-                best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = (
-                    algorithm.run(crossover_rate=value)
-                )
-            elif variable == "mutation_rate":
-                best_solution, best_fitness, worst_fitness, avg_fitness, _, _ = (
-                    algorithm.run(mutation_rate=value)
-                )
-
-            writer.writerow([value, best_fitness, worst_fitness, avg_fitness])
-
 
 if __name__ == "__main__":
     # Run all algorithms on all instances
     print("Running all algorithms on all instances...")
     run_all()
-    print("Done!")
-
-    # Experiment on population size, crossover rate, and mutation rate
-    instance = read_file("data/A-n80-k10.vrp")
-    population_sizes = [50, 100, 200, 400, 500]
-    crossover_rates = [0.3, 0.4, 0.5, 0.7, 0.9]
-    mutation_rates = [0.01, 0.1, 0.2, 0.3, 0.5]
-
-    print(
-        "Running experiments on population size, crossover rate, and mutation rate..."
-    )
-
-    print("Population size experiment...")
-    run_experiment(
-        instance, "population_experiment.csv", "population_size", population_sizes
-    )
-
-    print("Crossover rate experiment...")
-    run_experiment(
-        instance, "crossover_experiment.csv", "crossover_rate", crossover_rates
-    )
-
-    print("Mutation rate experiment...")
-    run_experiment(instance, "mutation_experiment.csv", "mutation_rate", mutation_rates)
 
     print("Done! Results are in the results directory.")

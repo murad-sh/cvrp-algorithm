@@ -1,7 +1,6 @@
 import random
 from utils import calculate_distance_matrix, calculate_fitness
 
-
 class GreedySearch:
     def __init__(self, dimension, capacity, node_coords, demands, depot):
         self.dimension = dimension
@@ -85,38 +84,17 @@ class GreedySearch:
 
         return routes
 
-    def run(self, iterations=100, alpha=1.0, beta=100.0):
+    def run(self, iterations=100):
         best_solution = self.generate_greedy_solution()
-        best_fitness, best_total_distance, best_number_of_vehicles = calculate_fitness(
-            best_solution, self.distance_matrix, alpha, beta
+        best_fitness = calculate_fitness(
+            best_solution, self.distance_matrix
         )
-
-        worst_fitness = float("-inf")
         total_fitness_sum = 0
-
-        for _ in range(iterations):
-            solution = self.generate_randomized_greedy_solution()
-            fitness, total_distance, number_of_vehicles = calculate_fitness(
-                solution, self.distance_matrix, alpha, beta
-            )
-
-            total_fitness_sum += fitness
-            if fitness > worst_fitness:
-                worst_fitness = fitness
-
-            if fitness < best_fitness:
-                best_fitness = fitness
-                best_solution = solution
-                best_total_distance = total_distance
-                best_number_of_vehicles = number_of_vehicles
-
-        average_fitness = total_fitness_sum / iterations
 
         return (
             best_solution,
             best_fitness,
-            worst_fitness,
-            average_fitness,
-            best_total_distance,
-            best_number_of_vehicles,
+            None,
+            None,
+            None
         )

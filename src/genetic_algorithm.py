@@ -3,7 +3,7 @@ from utils import calculate_distance_matrix, calculate_fitness
 from random_search import RandomSearch
 from greedy_search import GreedySearch
 from file_handler import read_file
-
+import statistics
 
 class GeneticAlgorithm:
     def __init__(self, dimension, capacity, node_coords, demands, depot):
@@ -42,7 +42,7 @@ class GeneticAlgorithm:
 
     def tournament_selection(self, population_fitness, tournament_size=5):
         tournament = random.sample(population_fitness, tournament_size)
-        tournament.sort(key=lambda x: x[1][0])
+        tournament.sort(key=lambda x: x[1])
         return tournament[0][0]
 
     def get_flattened_solution(self, solution):
@@ -108,6 +108,7 @@ class GeneticAlgorithm:
         best_fitness = float("inf")
         worst_fitness = float("-inf")
         total_fitness_sum = 0
+        fitness_values = []
 
         for generation in range(generations):
             new_population = []
@@ -117,11 +118,12 @@ class GeneticAlgorithm:
             generation_worst_fitness = float("-inf")
 
             for individual, fitness in population_fitness:
-                total_fitness_sum += fitness[0]
-                if fitness[0] < generation_best_fitness:
-                    generation_best_fitness = fitness[0]
-                if fitness[0] > generation_worst_fitness:
-                    generation_worst_fitness = fitness[0]
+                total_fitness_sum += fitness
+                fitness_values.append(fitness)
+                if fitness < generation_best_fitness:
+                    generation_best_fitness = fitness
+                if fitness > generation_worst_fitness:
+                    generation_worst_fitness = fitness
 
             # Update overall best and worst fitness
             if generation_best_fitness < best_fitness:
@@ -148,13 +150,14 @@ class GeneticAlgorithm:
             # Elitism
             self.population = sorted(
                 self.population + new_population,
-                key=lambda x: calculate_fitness(x, self.distance_matrix)[0],
+                key=lambda x: calculate_fitness(x, self.distance_matrix),
             )[:population_size]
 
         average_fitness = total_fitness_sum / (generations * population_size)
+        standard_deviation = statistics.stdev(fitness_values)
 
         best_individual = self.population[0]
-        best_fitness, best_total_distance, best_number_of_vehicles = calculate_fitness(
+        best_fitness = calculate_fitness(
             best_individual, self.distance_matrix
         )
 
@@ -163,6 +166,5 @@ class GeneticAlgorithm:
             best_fitness,
             worst_fitness,
             average_fitness,
-            best_total_distance,
-            best_number_of_vehicles,
+            standard_deviation
         )

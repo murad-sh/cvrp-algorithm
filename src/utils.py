@@ -15,8 +15,8 @@ def calculate_distance_matrix(node_coords):
     return distance_matrix
 
 
-# fitness = alpha * total_distance + beta * number_of_vehicles
-def calculate_fitness(solution, distance_matrix, alpha=1.0, beta=100.0):
+# fitness = total_distance 
+def calculate_fitness(solution, distance_matrix):
     total_distance = 0
     for route in solution:
         route_distance = 0
@@ -26,6 +26,4 @@ def calculate_fitness(solution, distance_matrix, alpha=1.0, beta=100.0):
             route_distance += distance_matrix[node1][node2]
         total_distance += route_distance
 
-    number_of_vehicles = len(solution)
-    fitness = alpha * total_distance + beta * number_of_vehicles
-    return fitness, total_distance, number_of_vehicles
+    return total_distance

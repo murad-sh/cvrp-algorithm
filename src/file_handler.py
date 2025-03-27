@@ -51,7 +51,7 @@ def read_file(file_path):
     }
 
 
-def log_results(results_dir, file_name, algo_name, best, worst=None, avg=None):
+def log_results(results_dir, file_name, algo_name, best, worst=None, avg=None, std=None):
     full_file_path = os.path.join(results_dir, "overall_results.csv")
     os.makedirs(results_dir, exist_ok=True)
     file_exists = os.path.isfile(full_file_path)
@@ -66,6 +66,7 @@ def log_results(results_dir, file_name, algo_name, best, worst=None, avg=None):
                     "Best Fitness",
                     "Worst Fitness",
                     "Average Fitness",
+                    "Standard Deviation",
                 ]
             )
-        writer.writerow([file_name, algo_name, best, worst, avg])
+        writer.writerow([file_name, algo_name, best, worst, avg, std])

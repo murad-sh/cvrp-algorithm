@@ -1,5 +1,6 @@
 import random
 from utils import calculate_distance_matrix, calculate_fitness
+import statistics
 
 
 class RandomSearch:
@@ -40,38 +41,37 @@ class RandomSearch:
 
         return routes
 
-    def run(self, iterations=100, alpha=1.0, beta=100.0):
+    def run(self, iterations=100):
         best_solution = None
         best_fitness = float("inf")
-        best_total_distance = None
-        best_number_of_vehicles = None
 
         worst_fitness = float("-inf")
         total_fitness_sum = 0
+        fitness_values = []
 
         for _ in range(iterations):
             solution = self.generate_random_solution()
-            fitness, total_distance, number_of_vehicles = calculate_fitness(
-                solution, self.distance_matrix, alpha, beta
+            fitness = calculate_fitness(
+                solution, self.distance_matrix
             )
 
             total_fitness_sum += fitness
+            fitness_values.append(fitness)
+
             if fitness > worst_fitness:
                 worst_fitness = fitness
 
             if fitness < best_fitness:
                 best_fitness = fitness
                 best_solution = solution
-                best_total_distance = total_distance
-                best_number_of_vehicles = number_of_vehicles
 
         average_fitness = total_fitness_sum / iterations
+        standard_deviation = statistics.stdev(fitness_values)
 
         return (
             best_solution,
             best_fitness,
             worst_fitness,
             average_fitness,
-            best_total_distance,
-            best_number_of_vehicles,
+            standard_deviation
         )
